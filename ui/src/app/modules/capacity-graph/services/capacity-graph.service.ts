@@ -9,8 +9,8 @@ export class CapacityGraphService {
     }
 
     public getCapacityData(view?, type?, name?) {
-        let _devUrl: string = './json/capacity.json';
-        let _url: string = BACKEND_URL + 'metrics';
+        let _url: string = './json/capacity.json';
+        let _devUrl: string = BACKEND_URL + 'metrics';
 
         if (type) {
             _url = _url + '/' + type;

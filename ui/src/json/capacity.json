@@ -1,0 +1,142 @@
+{
+    "data": {
+      "name": "cluster",
+      "type": "cluster",
+      "children": [
+        {
+          "name": "namespace-issue-detector",
+          "type": "namespace"
+        },
+        {
+          "name": "namespace-test-helm-deployment-g",
+          "type": "namespace"
+        },
+        {
+          "name": "namespace-wf-monitoring",
+          "type": "namespace",
+          "cpu": 11.484,
+          "memory": 30.683594,
+          "storage": 3,
+          "cpuCost": 42.583109,
+          "memoryCost": 47.406638,
+          "storageCost": 0.064376
+        },
+        {
+          "name": "namespace-uk",
+          "type": "namespace"
+        },
+        {
+          "name": "namespace-purser",
+          "type": "namespace",
+          "cpu": 1.6,
+          "memory": 4.589844,
+          "storage": 10,
+          "cpuCost": 5.747913,
+          "memoryCost": 6.851926,
+          "storageCost": 0.204861
+        },
+        {
+          "name": "namespace-fiaasco",
+          "type": "namespace",
+          "cpu": 3.2,
+          "memory": 17.960938,
+          "storage": 125,
+          "cpuCost": 11.865722,
+          "memoryCost": 27.749933,
+          "storageCost": 2.682319
+        },
+        {
+          "name": "namespace-jaeger",
+          "type": "namespace"
+        },
+        {
+          "name": "namespace-kube-public",
+          "type": "namespace"
+        },
+        {
+          "name": "namespace-kube-system",
+          "type": "namespace",
+          "cpu": 10.24,
+          "memory": 15.205078,
+          "cpuCost": 37.970309,
+          "memoryCost": 23.492087
+        },
+        {
+          "name": "namespace-prod1",
+          "type": "namespace"
+        },
+        {
+          "name": "namespace-chancellor",
+          "type": "namespace"
+        },
+        {
+          "name": "namespace-default",
+          "type": "namespace",
+          "cpu": 1578.42,
+          "memory": 4982.643923,
+          "storage": 25837,
+          "cpuCost": 1568.664637,
+          "memoryCost": 2266.310724,
+          "storageCost": 530.885222
+        },
+        {
+          "name": "namespace-issue-detector-ops-data-solr",
+          "type": "namespace"
+        },
+        {
+          "name": "namespace-jenkins-chancellor-deploy-21-c8r",
+          "type": "namespace"
+        },
+        {
+          "name": "namespace-watchmen",
+          "type": "namespace",
+          "cpu": 7.1,
+          "memory": 4.199219,
+          "cpuCost": 26.32707,
+          "memoryCost": 6.487859
+        },
+        {
+          "name": "namespace-hawkeye",
+          "type": "namespace",
+          "cpu": 12.9,
+          "memory": 7.128906,
+          "cpuCost": 26.957336,
+          "memoryCost": 7.128811
+        },
+        {
+          "name": "namespace-servo-test",
+          "type": "namespace"
+        },
+        {
+          "name": "namespace-syndicate",
+          "type": "namespace",
+          "cpu": 0.3,
+          "memory": 0.585938,
+          "cpuCost": 1.112411,
+          "memoryCost": 0.905283
+        },
+        {
+          "name": "namespace-wf-proxy-ci",
+          "type": "namespace",
+          "cpu": 0.9,
+          "memory": 3,
+          "storage": 1,
+          "cpuCost": 3.337234,
+          "memoryCost": 4.635048,
+          "storageCost": 0.021459
+        }
+      ],
+      "cpu": 1626.144,
+      "memory": 5065.99744,
+      "storage": 25976,
+      "cpuCost": 1724.5657410000001,
+      "memoryCost": 2390.968309,
+      "storageCost": 533.858237,
+      "cpuAllocated": 20.1,
+      "cpuCapacity": 80.4,
+      "memoryAllocated": 135.1,
+      "memoryCapacity": 150,
+      "storageAllocated": 950.1,
+      "storageCapacity": 1000.4
+    }
+  }

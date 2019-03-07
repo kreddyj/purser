@@ -16,6 +16,121 @@ const STATUS_WAIT = 'WAIT',
 
 export class CapactiyGraphComponent implements OnInit {
 
+    gaugeWidth = 700;
+    gaugeHeight = 200;
+    public gaugeType = 'cluster';
+
+    public cpuGaugeData = [];
+    public cpuAllocated = 100.0;
+    public cpuCapacity = 100.0;
+    cpuRedFrom = 0.75*this.cpuCapacity;
+    cpuRedTo = this.cpuCapacity;
+    cpuYellowFrom = 0.50*this.cpuCapacity;
+    cpuYellowTo = 0.75*this.cpuCapacity;
+    public cpuGaugeOptions = {
+        width: this.gaugeWidth, height: this.gaugeHeight,
+        redFrom: this.cpuRedFrom, redTo: this.cpuRedTo,
+        yellowFrom: this.cpuYellowFrom, yellowTo: this.cpuYellowTo,
+        minorTicks: 5, max: this.cpuCapacity,
+    };
+
+    public memoryGaugeData = [];
+    public memoryAllocated = 100.0;
+    public memoryCapacity = 100.0;
+    memoryRedFrom = 0.75*this.memoryCapacity;
+    memoryRedTo = this.memoryCapacity;
+    memoryYellowFrom = 0.50*this.memoryCapacity;
+    memoryYellowTo = 0.75*this.memoryCapacity;
+    public memoryGaugeOptions = {
+        width: this.gaugeWidth, height: this.gaugeHeight,
+        redFrom: this.memoryRedFrom, redTo: this.memoryRedTo,
+        yellowFrom: this.memoryYellowFrom, yellowTo: this.memoryYellowTo,
+        minorTicks: 5, max: this.memoryCapacity,
+    };
+
+    public storageGaugeData = [];
+    public storageAllocated = 100.0;
+    public storageCapacity = 100.0;
+    storageRedFrom = 0.75*this.storageCapacity;
+    storageRedTo = this.storageCapacity;
+    storageYellowFrom = 0.50*this.storageCapacity;
+    storageYellowTo = 0.75*this.storageCapacity;
+    public storageGaugeOptions = {
+        width: this.gaugeWidth, height: this.gaugeHeight,
+        redFrom: this.storageRedFrom, redTo: this.storageRedTo,
+        yellowFrom: this.storageYellowFrom, yellowTo: this.storageYellowTo,
+        minorTicks: 5, max: this.storageCapacity,
+    };
+
+    private setGauges(data) {
+        this.setCPUGauge(data)
+        this.setMemoryGauge(data)
+        this.setStorageGauge(data)
+    }
+
+    private setCPUGauge(data) {
+        if (data.type === 'node') {
+            this.gaugeType = 'Node'
+        } else {
+            if (data.type === 'pv') {
+                this.gaugeType = 'PersistentVolume'
+            } else {
+                this.gaugeType = 'Cluster'
+            }
+        }
+        this.cpuCapacity = data.cpuCapacity
+        this.cpuAllocated = data.cpuAllocated
+
+        let eachRow = ['CPU', this.cpuAllocated];
+        this.cpuGaugeData.push(eachRow);
+        this.cpuRedFrom = 0.75*this.cpuCapacity;
+        this.cpuRedTo = this.cpuCapacity;
+        this.cpuYellowFrom = 0.50*this.cpuCapacity;
+        this.cpuYellowTo = 0.75*this.cpuCapacity;
+        this.cpuGaugeOptions = {
+            width: this.gaugeWidth, height: this.gaugeHeight,
+            redFrom: this.cpuRedFrom, redTo: this.cpuRedTo,
+            yellowFrom: this.cpuYellowFrom, yellowTo: this.cpuYellowTo,
+            minorTicks: 5, max: this.cpuCapacity,
+        };
+    }
+
+    private setMemoryGauge(data) {
+        this.memoryCapacity = data.memoryCapacity
+        this.memoryAllocated = data.memoryAllocated
+
+        let eachRow = ['Memory', this.memoryAllocated];
+        this.memoryGaugeData.push(eachRow);
+        this.memoryRedFrom = 0.75*this.memoryCapacity;
+        this.memoryRedTo = this.memoryCapacity;
+        this.memoryYellowFrom = 0.50*this.memoryCapacity;
+        this.memoryYellowTo = 0.75*this.memoryCapacity;
+        this.memoryGaugeOptions = {
+            width: this.gaugeWidth, height: this.gaugeHeight,
+            redFrom: this.memoryRedFrom, redTo: this.memoryRedTo,
+            yellowFrom: this.memoryYellowFrom, yellowTo: this.memoryYellowTo,
+            minorTicks: 5, max: this.memoryCapacity,
+        };
+    }
+
+    private setStorageGauge(data) {
+        this.storageCapacity = data.storageCapacity
+        this.storageAllocated = data.storageAllocated
+
+        let eachRow = ['Storage', this.storageAllocated];
+        this.storageGaugeData.push(eachRow);
+        this.storageRedFrom = 0.75*this.storageCapacity;
+        this.storageRedTo = this.storageCapacity;
+        this.storageYellowFrom = 0.50*this.storageCapacity;
+        this.storageYellowTo = 0.75*this.storageCapacity;
+        this.storageGaugeOptions = {
+            width: this.gaugeWidth, height: this.gaugeHeight,
+            redFrom: this.storageRedFrom, redTo: this.storageRedTo,
+            yellowFrom: this.storageYellowFrom, yellowTo: this.storageYellowTo,
+            minorTicks: 5, max: this.storageCapacity,
+        };
+    }
+
     //PUBLIC
     public CAPA_STATUS = STATUS_WAIT;
     public graphData = [];
@@ -48,7 +163,7 @@ export class CapactiyGraphComponent implements OnInit {
     //PRIVATE
     private orgCapaData: any = {};
     private capaData: any = {};
-    private keysToConsider: any = ['service', 'pod', 'container', 'process', 'cluster', 'namespace', 'deployment', 'replicaset', 'node', 'daemonset', 'job', 'statefulset', 'children'];
+    private keysToConsider: any = ['service', 'pod', 'container', 'process', 'cluster', 'namespace', 'deployment', 'replicaset', 'node', 'daemonset', 'job', 'statefulset', 'children', 'pv', 'pvc'];
     private uniqNames: any = [];
 
     constructor(private router: Router, private capacityGraphService: CapacityGraphService) { }
@@ -119,6 +234,8 @@ export class CapactiyGraphComponent implements OnInit {
                 }
             }
         }
+        this.setGauges(data)
+
         this.CAPA_STATUS = STATUS_READY;
         //console.log(this.graphData);
     }

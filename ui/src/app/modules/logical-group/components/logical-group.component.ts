@@ -14,21 +14,6 @@ const STATUS_WAIT = 'WAIT',
 })
 export class LogicalGroupComponent implements OnInit {
 
-  public gaugeData = [];
-  public load:boolean = false;
-//     ['Label', 'Value'],
-//     ['Memory', 80],
-//     ['CPU', 55],
-//     ['Network', 68]
-// ];
-
-public gaugeOptions = {
-    width: 400, height: 120,
-    redFrom: 90, redTo: 100,
-    yellowFrom:75, yellowTo: 90,
-    minorTicks: 5
-};
-
   title = 'my-app';
   groups: Object[];
   public GROUP_STATUS = STATUS_WAIT;
@@ -52,17 +37,6 @@ public gaugeOptions = {
 
   ngOnInit() {
     this.getLogicalGroupData()
-    let eachRow = [];
-    eachRow.push({v: 'CPU', f: 60});
-    this.gaugeData.push(eachRow);
-    eachRow = [];
-    eachRow.push({v: 'Memory', f: 80});
-    // eachRow.push(null);
-    // eachRow.push(0);
-    this.gaugeData.push(eachRow);
-    console.log(this.gaugeData);
-    this.load = true;
-
   }
 
 }

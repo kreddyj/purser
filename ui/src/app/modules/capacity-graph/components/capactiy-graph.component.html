@@ -99,3 +99,47 @@
         </div>
     </div>
 </div>
+
+<div class="row" style="margin-top: 5%">
+    <div class="headerBlock">
+        <div class="card-title">
+            <span class="headerText">{{gaugeType + ' Resource Allocation vs Capacity'}}</span>
+        </div>
+    </div>
+</div>
+
+<div class="row" style="margin-top: 2%">
+    <div class="col-xs-4">
+        <div class="headerBlock">
+            <div class="card-title">
+                <span class="headerText">{{'CPU: ' + cpuAllocated + ' vCPU / ' + cpuCapacity + ' vCPU'}}</span>
+            </div>
+            <div class="googleChartDiv">
+                <google-chart class="googleChart" [type]="'Gauge'" [data]="cpuGaugeData" [options]="cpuGaugeOptions"
+                    (select)="onSelect($event)" style="cursor:pointer"></google-chart>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-4">
+        <div class="headerBlock">
+            <div class="card-title">
+                <span class="headerText">{{'Memory: ' + memoryAllocated + ' GB / ' + memoryCapacity + ' GB'}}</span>
+            </div>
+            <div class="googleChartDiv">
+                <google-chart class="googleChart" [type]="'Gauge'" [data]="memoryGaugeData" [options]="memoryGaugeOptions"
+                    (select)="onSelect($event)" style="cursor:pointer"></google-chart>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-4">
+        <div class="headerBlock">
+            <div class="card-title">
+                <span class="headerText">{{'Storage: ' + storageAllocated + ' GB / ' + storageCapacity + ' GB'}}</span>
+            </div>
+            <div class="googleChartDiv">
+                <google-chart class="googleChart" [type]="'Gauge'" [data]="storageGaugeData" [options]="storageGaugeOptions"
+                    (select)="onSelect($event)" style="cursor:pointer"></google-chart>
+            </div>
+        </div>
+    </div>
+</div>
