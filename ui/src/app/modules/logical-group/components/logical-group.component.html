@@ -1,6 +1,13 @@
 <h3>Custom Groups</h3>
 
-<clr-datagrid>
+<div *ngIf="load">
+  <div class="googleChartDiv">
+    <google-chart class="googleChart" [type]="'Gauge'" [data]="gaugeData" [options]="gaugeOptions"
+        (select)="onSelect($event)" style="cursor:pointer"></google-chart>
+</div>
+</div>
+
+<!-- <clr-datagrid>
     <clr-dg-column [clrDgField]="'name'">Group Name</clr-dg-column>
     <clr-dg-column [clrDgField]="'podsCount'">Pods</clr-dg-column>
     <clr-dg-column [clrDgField]="'cpu'">CPU (vCPU)</clr-dg-column>
@@ -25,4 +32,4 @@
       <clr-dg-cell>{{ (group.mtdCost | number: '1.0-2') || 0 }}</clr-dg-cell>
     </clr-dg-row>
 </clr-datagrid>
-<p class="p5"><i>* All costs are computed for Month To Date (MTD).</i></p>
+<p class="p5"><i>* All costs are computed for Month To Date (MTD).</i></p> -->

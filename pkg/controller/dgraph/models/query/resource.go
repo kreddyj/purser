@@ -23,7 +23,6 @@ import (
 	"github.com/Sirupsen/logrus"
 )
 
-// Cluster resource constants
 const (
 	ContainerCheck = "isContainer"
 	ContainerType  = "container"
@@ -116,15 +115,18 @@ func getJSONDataFromQuery(query string) JSONDataWrapper {
 	}
 	root := JSONDataWrapper{
 		Data: ParentWrapper{
-			Name:        parentRoot.Parent[0].Name,
-			Type:        parentRoot.Parent[0].Type,
-			Children:    parentRoot.Parent[0].Children,
-			CPU:         parentRoot.Parent[0].CPU,
-			Memory:      parentRoot.Parent[0].Memory,
-			Storage:     parentRoot.Parent[0].Storage,
-			CPUCost:     parentRoot.Parent[0].CPUCost,
-			MemoryCost:  parentRoot.Parent[0].MemoryCost,
-			StorageCost: parentRoot.Parent[0].StorageCost,
+			Name:             parentRoot.Parent[0].Name,
+			Type:             parentRoot.Parent[0].Type,
+			Children:         parentRoot.Parent[0].Children,
+			CPU:              parentRoot.Parent[0].CPU,
+			Memory:           parentRoot.Parent[0].Memory,
+			Storage:          parentRoot.Parent[0].Storage,
+			CPUCost:          parentRoot.Parent[0].CPUCost,
+			MemoryCost:       parentRoot.Parent[0].MemoryCost,
+			StorageCost:      parentRoot.Parent[0].StorageCost,
+			CPUAllocated:     parentRoot.CPUAllocated,
+			MemoryAllocated:  parentRoot.MemoryAllocated,
+			StorageAllocated: parentRoot.StorageAllocated,
 		},
 	}
 	return root

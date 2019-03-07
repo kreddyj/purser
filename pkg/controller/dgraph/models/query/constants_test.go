@@ -359,6 +359,8 @@ const nodeMetricTestQuery = `query {
 			cpu: cpu as cpuCapacity
 			memory: memory as memoryCapacity
 			storage: storage as sum(val(storagePod))
+			cpuAllocated: sum(val(cpuPod))
+			memoryAllocated: sum(val(memoryPod))
 			st as startTime
 			stSeconds as math(since(st))
 			secondsSinceStart as math(cond(stSeconds > 1.45, 1.45, stSeconds))

@@ -243,6 +243,7 @@ func GetClusterMetrics(w http.ResponseWriter, r *http.Request) {
 	} else {
 		jsonData = query.RetrieveClusterMetrics(query.Logical)
 	}
+	query.PopulateClusterAllocationAndCapacity(&jsonData)
 	encodeAndWrite(w, jsonData)
 }
 
@@ -258,6 +259,7 @@ func GetNamespaceMetrics(w http.ResponseWriter, r *http.Request) {
 	} else {
 		jsonData = query.RetrieveClusterMetrics(query.Logical)
 	}
+	query.PopulateClusterAllocationAndCapacity(&jsonData)
 	encodeAndWrite(w, jsonData)
 }
 
@@ -273,6 +275,7 @@ func GetDeploymentMetrics(w http.ResponseWriter, r *http.Request) {
 	} else {
 		logrus.Errorf("wrong type of query for deployment, no name is given")
 	}
+	query.PopulateClusterAllocationAndCapacity(&jsonData)
 	encodeAndWrite(w, jsonData)
 }
 
@@ -303,6 +306,7 @@ func GetJobMetrics(w http.ResponseWriter, r *http.Request) {
 	} else {
 		logrus.Errorf("wrong type of query for job, no name is given")
 	}
+	query.PopulateClusterAllocationAndCapacity(&jsonData)
 	encodeAndWrite(w, jsonData)
 }
 
@@ -318,6 +322,7 @@ func GetStatefulsetMetrics(w http.ResponseWriter, r *http.Request) {
 	} else {
 		logrus.Errorf("wrong type of query for statefulset, no name is given")
 	}
+	query.PopulateClusterAllocationAndCapacity(&jsonData)
 	encodeAndWrite(w, jsonData)
 }
 
@@ -333,6 +338,7 @@ func GetReplicasetMetrics(w http.ResponseWriter, r *http.Request) {
 	} else {
 		logrus.Errorf("wrong type of query for statefulset, no name is given")
 	}
+	query.PopulateClusterAllocationAndCapacity(&jsonData)
 	encodeAndWrite(w, jsonData)
 }
 
@@ -345,6 +351,7 @@ func GetNodeMetrics(w http.ResponseWriter, r *http.Request) {
 	var jsonData query.JSONDataWrapper
 	if name, isName := queryParams[query.Name]; isName {
 		jsonData = query.RetrieveResourceMetrics(query.NodeCheck, query.NodeType, name[0])
+		query.PopulateNodeOrPVAllocationAndCapacity(query.NodeType, name[0], &jsonData)
 	} else {
 		logrus.Errorf("wrong type of query for node, no name is given")
 	}
@@ -363,6 +370,7 @@ func GetPodMetrics(w http.ResponseWriter, r *http.Request) {
 	} else {
 		logrus.Errorf("wrong type of query for pod, no name is given")
 	}
+	query.PopulateClusterAllocationAndCapacity(&jsonData)
 	encodeAndWrite(w, jsonData)
 }
 
@@ -378,6 +386,7 @@ func GetContainerMetrics(w http.ResponseWriter, r *http.Request) {
 	} else {
 		logrus.Errorf("wrong type of query for container, no name is given")
 	}
+	query.PopulateClusterAllocationAndCapacity(&jsonData)
 	encodeAndWrite(w, jsonData)
 }
 
@@ -390,6 +399,7 @@ func GetPVMetrics(w http.ResponseWriter, r *http.Request) {
 	var jsonData query.JSONDataWrapper
 	if name, isName := queryParams[query.Name]; isName {
 		jsonData = query.RetrieveResourceMetrics(query.PVCheck, query.PVType, name[0])
+		query.PopulateNodeOrPVAllocationAndCapacity(query.PVType, name[0], &jsonData)
 	} else {
 		logrus.Errorf("wrong type of query for PV, no name is given")
 	}
@@ -408,6 +418,7 @@ func GetPVCMetrics(w http.ResponseWriter, r *http.Request) {
 	} else {
 		logrus.Errorf("wrong type of query for PVC, no name is given")
 	}
+	query.PopulateClusterAllocationAndCapacity(&jsonData)
 	encodeAndWrite(w, jsonData)
 }
 

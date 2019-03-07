@@ -25,6 +25,8 @@ import (
 var executeQuery = dgraph.ExecuteQuery
 var executeQueryRaw = dgraph.ExecuteQueryRaw
 
+var allocatedAndCapacity *ParentWrapper
+
 func getClusterHierarchyQuery(view string) string {
 	switch view {
 	case Physical:
@@ -104,5 +106,53 @@ func calculateAggregateMetrics(objRoot *ParentWrapper) {
 		objRoot.CPUCost += obj.CPUCost
 		objRoot.MemoryCost += obj.MemoryCost
 		objRoot.StorageCost += obj.StorageCost
+	}
+}
+
+// PopulateClusterAllocationAndCapacity ...
+func PopulateClusterAllocationAndCapacity(jsonData *JSONDataWrapper) {
+	if allocatedAndCapacity == nil {
+		ComputeClusterAllocationAndCapacity()
+	}
+	populateCapacityData(*allocatedAndCapacity, jsonData)
+}
+
+// ComputeClusterAllocationAndCapacity returns allocated, capacity for cpu, memory and storage
+func ComputeClusterAllocationAndCapacity() {
+	allocation := RetrieveClusterMetrics(Logical)
+	capacity := RetrieveClusterMetrics(Physical)
+	allocatedAndCapacity = &ParentWrapper{
+		CPUAllocated:     allocation.Data.CPU,
+		MemoryAllocated:  allocation.Data.Memory,
+		StorageAllocated: allocation.Data.Storage,
+		CPUCapacity:      capacity.Data.CPU,
+		MemoryCapacity:   capacity.Data.Memory,
+		StorageCapacity:  capacity.Data.Storage,
+	}
+}
+
+// PopulateNodeOrPVAllocationAndCapacity returns allocated, capacity for cpu, memory and storage
+func PopulateNodeOrPVAllocationAndCapacity(resourceType, name string, jsonData *JSONDataWrapper) {
+	capacityData := getCapacityData(resourceType, name)
+	populateCapacityData(capacityData.Data, jsonData)
+}
+
+func populateCapacityData(allocatedAndCapacity ParentWrapper, jsonData *JSONDataWrapper) {
+	jsonData.Data.CPUAllocated = allocatedAndCapacity.CPUAllocated
+	jsonData.Data.MemoryAllocated = allocatedAndCapacity.MemoryAllocated
+	jsonData.Data.StorageAllocated = allocatedAndCapacity.StorageAllocated
+	jsonData.Data.CPUCapacity = allocatedAndCapacity.CPUCapacity
+	jsonData.Data.MemoryCapacity = allocatedAndCapacity.MemoryCapacity
+	jsonData.Data.StorageCapacity = allocatedAndCapacity.StorageCapacity
+}
+
+func getCapacityData(resourceType, name string) JSONDataWrapper {
+	switch resourceType {
+	case NamespaceType:
+		return RetrieveResourceMetrics(NamespaceCheck, NamespaceType, name)
+	case PVType:
+		return RetrieveResourceMetrics(PVCheck, PVType, name)
+	default:
+		return JSONDataWrapper{}
 	}
 }

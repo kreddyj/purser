@@ -55,16 +55,22 @@ type Parent struct {
 
 // ParentWrapper structure
 type ParentWrapper struct {
-	Name        string     `json:"name,omitempty"`
-	Type        string     `json:"type,omitempty"`
-	Children    []Children `json:"children,omitempty"`
-	Parent      []Parent   `json:"parent,omitempty"`
-	CPU         float64    `json:"cpu,omitempty"`
-	Memory      float64    `json:"memory,omitempty"`
-	Storage     float64    `json:"storage,omitempty"`
-	CPUCost     float64    `json:"cpuCost,omitempty"`
-	MemoryCost  float64    `json:"memoryCost,omitempty"`
-	StorageCost float64    `json:"storageCost,omitempty"`
+	Name             string     `json:"name,omitempty"`
+	Type             string     `json:"type,omitempty"`
+	Children         []Children `json:"children,omitempty"`
+	Parent           []Parent   `json:"parent,omitempty"`
+	CPU              float64    `json:"cpu,omitempty"`
+	Memory           float64    `json:"memory,omitempty"`
+	Storage          float64    `json:"storage,omitempty"`
+	CPUCost          float64    `json:"cpuCost,omitempty"`
+	MemoryCost       float64    `json:"memoryCost,omitempty"`
+	StorageCost      float64    `json:"storageCost,omitempty"`
+	CPUAllocated     float64    `json:"cpuAllocated,omitempty"`
+	MemoryAllocated  float64    `json:"memoryAllocated,omitempty"`
+	StorageAllocated float64    `json:"storageAllocated,omitempty"`
+	CPUCapacity      float64    `json:"cpuCapacity,omitempty"`
+	MemoryCapacity   float64    `json:"memoryCapacity,omitempty"`
+	StorageCapacity  float64    `json:"storageCapacity,omitempty"`
 }
 
 // JSONDataWrapper structure
