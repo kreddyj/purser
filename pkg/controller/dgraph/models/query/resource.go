@@ -127,6 +127,9 @@ func getJSONDataFromQuery(query string) JSONDataWrapper {
 			CPUAllocated:     parentRoot.Parent[0].CPUAllocated,
 			MemoryAllocated:  parentRoot.Parent[0].MemoryAllocated,
 			StorageAllocated: parentRoot.Parent[0].StorageAllocated,
+			CPUCapacity:      parentRoot.Parent[0].CPU,
+			MemoryCapacity:   parentRoot.Parent[0].Memory,
+			StorageCapacity:  parentRoot.Parent[0].Storage,
 		},
 	}
 	return root
