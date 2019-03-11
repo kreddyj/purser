@@ -62,14 +62,14 @@ export class CapactiyGraphComponent implements OnInit {
         minorTicks: 5, max: this.storageCapacity,
     };
 
-    private setGauges(capaData) {
-        let data = JSON.parse(JSON.stringify(capaData));
+    private setGauges(data) {
         this.setCPUGauge(data)
         this.setMemoryGauge(data)
         this.setStorageGauge(data)
     }
 
     private setCPUGauge(data) {
+        console.log(data)
         if (data.type === 'node') {
             this.gaugeType = 'Node'
         } else {
@@ -79,8 +79,8 @@ export class CapactiyGraphComponent implements OnInit {
                 this.gaugeType = 'Cluster'
             }
         }
-        this.cpuCapacity = data.cpuCapacity
-        this.cpuAllocated = data.cpuAllocated
+        this.cpuCapacity = data.cpuCapacity.toFixed(2)
+        this.cpuAllocated = data.cpuAllocated.toFixed(2)
 
         this.cpuGaugeData = [];
         let eachRow = ['CPU', this.cpuAllocated];
@@ -183,7 +183,6 @@ export class CapactiyGraphComponent implements OnInit {
             this.orgCapaData = JSON.parse(JSON.stringify(this.capaData));
             //console.log(this.capaData);
             this.constructData(this.capaData);
-            this.setGauges(this.capaData);
         }, (err) => {
             this.CAPA_STATUS = STATUS_NODATA;
         });
@@ -239,6 +238,7 @@ export class CapactiyGraphComponent implements OnInit {
                 }
             }
         }
+        this.setGauges(data);
 
         this.CAPA_STATUS = STATUS_READY;
         //console.log(this.graphData);
