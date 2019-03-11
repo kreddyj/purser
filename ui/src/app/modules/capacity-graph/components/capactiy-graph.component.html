@@ -100,7 +100,7 @@
     </div>
 </div>
 
-<div class="row" style="margin-top: 5%">
+<div class="row" style="margin-top: 5%" *ngIf="CAPA_STATUS === 'READY'">
     <div class="headerBlock">
         <div class="card-title">
             <span class="headerText">{{gaugeType + ' Resource Allocation vs Capacity'}}</span>
@@ -108,7 +108,7 @@
     </div>
 </div>
 
-<div class="row" style="margin-top: 2%">
+<div class="row" style="margin-top: 2%" *ngIf="CAPA_STATUS === 'READY'">
     <div class="col-xs-4">
         <div class="headerBlock">
             <div class="card-title">

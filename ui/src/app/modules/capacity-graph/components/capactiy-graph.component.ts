@@ -62,7 +62,8 @@ export class CapactiyGraphComponent implements OnInit {
         minorTicks: 5, max: this.storageCapacity,
     };
 
-    private setGauges(data) {
+    private setGauges(capaData) {
+        let data = JSON.parse(JSON.stringify(capaData));
         this.setCPUGauge(data)
         this.setMemoryGauge(data)
         this.setStorageGauge(data)
@@ -179,6 +180,7 @@ export class CapactiyGraphComponent implements OnInit {
             this.orgCapaData = JSON.parse(JSON.stringify(this.capaData));
             //console.log(this.capaData);
             this.constructData(this.capaData);
+            this.setGauges(this.capaData);
         }, (err) => {
             this.CAPA_STATUS = STATUS_NODATA;
         });
@@ -234,7 +236,6 @@ export class CapactiyGraphComponent implements OnInit {
                 }
             }
         }
-        this.setGauges(data)
 
         this.CAPA_STATUS = STATUS_READY;
         //console.log(this.graphData);
