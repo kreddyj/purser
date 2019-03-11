@@ -148,8 +148,8 @@ func populateCapacityData(allocatedAndCapacity ParentWrapper, jsonData *JSONData
 
 func getCapacityData(resourceType, name string) JSONDataWrapper {
 	switch resourceType {
-	case NamespaceType:
-		return RetrieveResourceMetrics(NamespaceCheck, NamespaceType, name)
+	case NodeType:
+		return RetrieveResourceMetrics(NodeCheck, NodeType, name)
 	case PVType:
 		return RetrieveResourceMetrics(PVCheck, PVType, name)
 	default:
