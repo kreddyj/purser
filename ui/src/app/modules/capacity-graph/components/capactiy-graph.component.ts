@@ -82,6 +82,7 @@ export class CapactiyGraphComponent implements OnInit {
         this.cpuCapacity = data.cpuCapacity
         this.cpuAllocated = data.cpuAllocated
 
+        this.cpuGaugeData = [];
         let eachRow = ['CPU', this.cpuAllocated];
         this.cpuGaugeData.push(eachRow);
         this.cpuRedFrom = 0.75*this.cpuCapacity;
@@ -100,6 +101,7 @@ export class CapactiyGraphComponent implements OnInit {
         this.memoryCapacity = data.memoryCapacity
         this.memoryAllocated = data.memoryAllocated
 
+        this.memoryGaugeData = [];
         let eachRow = ['Memory', this.memoryAllocated];
         this.memoryGaugeData.push(eachRow);
         this.memoryRedFrom = 0.75*this.memoryCapacity;
@@ -118,6 +120,7 @@ export class CapactiyGraphComponent implements OnInit {
         this.storageCapacity = data.storageCapacity
         this.storageAllocated = data.storageAllocated
 
+        this.storageGaugeData = [];
         let eachRow = ['Storage', this.storageAllocated];
         this.storageGaugeData.push(eachRow);
         this.storageRedFrom = 0.75*this.storageCapacity;
