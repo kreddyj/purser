@@ -202,12 +202,12 @@ func getMetricsQueryForPhysicalResources() string {
 	return `query {
 			children(func: has(name)) @filter(has(isNode) OR has(isPersistentVolume)) {
 				name
-				type
-				cpu: cpu as cpuCapacity
-				memory: memory as memoryCapacity
-				storage: storage as storageCapacity
-				` + getQueryForTimeComputation("") + `
-				` + getQueryForCostWithPriceWithAlias("") + `
+			type
+			cpu: cpu as cpuCapacity
+			memory: memory as memoryCapacity
+			storage: storage as storageCapacity
+			` + getQueryForTimeComputation("") + `
+			` + getQueryForCostWithPriceWithAlias("") + `
 			}
 		}`
 }

@@ -26,22 +26,18 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func mockDgraphForSubscriberQueries(dgraphError bool) {
+func mockDgraphForSubscriberQueries(queryType string) {
 	executeQuery = func(query string, root interface{}) error {
-		if dgraphError {
-			return fmt.Errorf("unable to connect/retrieve data from dgraph")
-		}
-
 		dummySubscriberList, ok := root.(*subscriberRoot)
 		if !ok {
 			return fmt.Errorf("wrong root received")
 		}
 
-		if query == subcriberRetrievalTestQuery {
+		if queryType == testRetrieveSubscribers {
 			dummySubscriber := models.SubscriberCRD{
 				Name: "subscriber-purser",
 				Spec: models.SubscriberSpec{
-					URL: "http://purer.com",
+					URL: "http://purser.com",
 				},
 			}
 			dummySubscriberList.Subscribers = []models.SubscriberCRD{dummySubscriber}
@@ -54,19 +50,19 @@ func mockDgraphForSubscriberQueries(dgraphError bool) {
 
 // TestRetrieveSubscribersWithDgraphError ...
 func TestRetrieveSubscribersWithDgraphError(t *testing.T) {
-	mockDgraphForSubscriberQueries(testDgraphError)
+	mockDgraphForSubscriberQueries(testWrongQuery)
 	_, err := RetrieveSubscribers()
 	assert.Error(t, err)
 }
 
 // TestRetrieveSubscribers ...
 func TestRetrieveSubscribers(t *testing.T) {
-	mockDgraphForSubscriberQueries(testNoDgraphError)
+	mockDgraphForSubscriberQueries(testRetrieveSubscribers)
 	got, err := RetrieveSubscribers()
 	expected := []models.SubscriberCRD{{
 		Name: "subscriber-purser",
 		Spec: models.SubscriberSpec{
-			URL: "http://purer.com",
+			URL: "http://purser.com",
 		},
 	}}
 	assert.Equal(t, expected, got)

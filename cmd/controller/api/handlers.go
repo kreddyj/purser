@@ -79,7 +79,13 @@ func GetNamespaceHierarchy(w http.ResponseWriter, r *http.Request) {
 
 	var jsonData query.JSONDataWrapper
 	if name, isName := queryParams[query.Name]; isName {
-		jsonData = query.RetrieveResourceHierarchy(query.NamespaceCheck, query.NamespaceType, name[0], query.NamespaceChildFilter)
+		resourceQuery := query.Resource{
+			Check:       query.NamespaceCheck,
+			Type:        query.NamespaceType,
+			Name:        name[0],
+			ChildFilter: query.NamespaceChildFilter,
+		}
+		jsonData = resourceQuery.RetrieveResourceHierarchy()
 	} else {
 		jsonData = query.RetrieveClusterHierarchy(query.Logical)
 	}
@@ -94,7 +100,13 @@ func GetDeploymentHierarchy(w http.ResponseWriter, r *http.Request) {
 
 	var jsonData query.JSONDataWrapper
 	if name, isName := queryParams[query.Name]; isName {
-		jsonData = query.RetrieveResourceHierarchy(query.DeploymentCheck, query.DeploymentType, name[0], query.IsReplicasetFilter)
+		resourceQuery := query.Resource{
+			Check:       query.DeploymentCheck,
+			Type:        query.DeploymentType,
+			Name:        name[0],
+			ChildFilter: query.IsReplicasetFilter,
+		}
+		jsonData = resourceQuery.RetrieveResourceHierarchy()
 	} else {
 		logrus.Errorf("wrong type of query for deployment, no name is given")
 	}
@@ -109,7 +121,13 @@ func GetReplicasetHierarchy(w http.ResponseWriter, r *http.Request) {
 
 	var jsonData query.JSONDataWrapper
 	if name, isName := queryParams[query.Name]; isName {
-		jsonData = query.RetrieveResourceHierarchy(query.ReplicasetCheck, query.ReplicasetType, name[0], query.IsPodFilter)
+		resourceQuery := query.Resource{
+			Check:       query.ReplicasetCheck,
+			Type:        query.ReplicasetType,
+			Name:        name[0],
+			ChildFilter: query.IsPodFilter,
+		}
+		jsonData = resourceQuery.RetrieveResourceHierarchy()
 	} else {
 		logrus.Errorf("wrong type of query for replicaset, no name is given")
 	}
@@ -124,7 +142,13 @@ func GetStatefulsetHierarchy(w http.ResponseWriter, r *http.Request) {
 
 	var jsonData query.JSONDataWrapper
 	if name, isName := queryParams[query.Name]; isName {
-		jsonData = query.RetrieveResourceHierarchy(query.StatefulsetCheck, query.StatefulsetType, name[0], query.IsPodFilter)
+		resourceQuery := query.Resource{
+			Check:       query.StatefulsetCheck,
+			Type:        query.StatefulsetType,
+			Name:        name[0],
+			ChildFilter: query.IsPodFilter,
+		}
+		jsonData = resourceQuery.RetrieveResourceHierarchy()
 	} else {
 		logrus.Errorf("wrong type of query for statefulset, no name is given")
 	}
@@ -139,7 +163,13 @@ func GetPodHierarchy(w http.ResponseWriter, r *http.Request) {
 
 	var jsonData query.JSONDataWrapper
 	if name, isName := queryParams[query.Name]; isName {
-		jsonData = query.RetrieveResourceHierarchy(query.PodCheck, query.PodType, name[0], query.IsContainerFilter)
+		resourceQuery := query.Resource{
+			Check:       query.PodCheck,
+			Type:        query.PodType,
+			Name:        name[0],
+			ChildFilter: query.IsContainerFilter,
+		}
+		jsonData = resourceQuery.RetrieveResourceHierarchy()
 	} else {
 		logrus.Errorf("wrong type of query for pod, no name is given")
 	}
@@ -154,7 +184,13 @@ func GetContainerHierarchy(w http.ResponseWriter, r *http.Request) {
 
 	var jsonData query.JSONDataWrapper
 	if name, isName := queryParams[query.Name]; isName {
-		jsonData = query.RetrieveResourceHierarchy(query.ContainerCheck, query.ContainerType, name[0], query.IsProcFilter)
+		resourceQuery := query.Resource{
+			Check:       query.ContainerCheck,
+			Type:        query.ContainerType,
+			Name:        name[0],
+			ChildFilter: query.IsProcFilter,
+		}
+		jsonData = resourceQuery.RetrieveResourceHierarchy()
 	} else {
 		logrus.Errorf("wrong type of query for container, no name is given")
 	}
@@ -179,7 +215,13 @@ func GetNodeHierarchy(w http.ResponseWriter, r *http.Request) {
 
 	var jsonData query.JSONDataWrapper
 	if name, isName := queryParams[query.Name]; isName {
-		jsonData = query.RetrieveResourceHierarchy(query.NodeCheck, query.NodeType, name[0], query.IsPodFilter)
+		resourceQuery := query.Resource{
+			Check:       query.NodeCheck,
+			Type:        query.NodeType,
+			Name:        name[0],
+			ChildFilter: query.IsPodFilter,
+		}
+		jsonData = resourceQuery.RetrieveResourceHierarchy()
 	} else {
 		logrus.Errorf("wrong type of query for node, no name is given")
 	}
@@ -194,7 +236,13 @@ func GetPVHierarchy(w http.ResponseWriter, r *http.Request) {
 
 	var jsonData query.JSONDataWrapper
 	if name, isName := queryParams[query.Name]; isName {
-		jsonData = query.RetrieveResourceHierarchy(query.PVCheck, query.PVType, name[0], query.IsPVCFilter)
+		resourceQuery := query.Resource{
+			Check:       query.PVCheck,
+			Type:        query.PVType,
+			Name:        name[0],
+			ChildFilter: query.IsPVCFilter,
+		}
+		jsonData = resourceQuery.RetrieveResourceHierarchy()
 	} else {
 		logrus.Errorf("wrong type of query for PV, no name is given")
 	}
@@ -209,7 +257,13 @@ func GetDaemonsetHierarchy(w http.ResponseWriter, r *http.Request) {
 
 	var jsonData query.JSONDataWrapper
 	if name, isName := queryParams[query.Name]; isName {
-		jsonData = query.RetrieveResourceHierarchy(query.DaemonsetCheck, query.DaemonsetType, name[0], query.IsPodFilter)
+		resourceQuery := query.Resource{
+			Check:       query.DaemonsetCheck,
+			Type:        query.DaemonsetType,
+			Name:        name[0],
+			ChildFilter: query.IsPodFilter,
+		}
+		jsonData = resourceQuery.RetrieveResourceHierarchy()
 	} else {
 		logrus.Errorf("wrong type of query for Daemonset, no name is given")
 	}
@@ -224,7 +278,13 @@ func GetJobHierarchy(w http.ResponseWriter, r *http.Request) {
 
 	var jsonData query.JSONDataWrapper
 	if name, isName := queryParams[query.Name]; isName {
-		jsonData = query.RetrieveResourceHierarchy(query.JobCheck, query.JobType, name[0], query.IsPodFilter)
+		resourceQuery := query.Resource{
+			Check:       query.JobCheck,
+			Type:        query.JobType,
+			Name:        name[0],
+			ChildFilter: query.IsPodFilter,
+		}
+		jsonData = resourceQuery.RetrieveResourceHierarchy()
 	} else {
 		logrus.Errorf("wrong type of query for Job, no name is given")
 	}
@@ -255,7 +315,12 @@ func GetNamespaceMetrics(w http.ResponseWriter, r *http.Request) {
 
 	var jsonData query.JSONDataWrapper
 	if name, isName := queryParams[query.Name]; isName {
-		jsonData = query.RetrieveResourceMetrics(query.NamespaceCheck, query.NamespaceType, name[0])
+		resourceQuery := query.Resource{
+			Check: query.NamespaceCheck,
+			Type:  query.NamespaceType,
+			Name:  name[0],
+		}
+		jsonData = resourceQuery.RetrieveResourceMetrics()
 	} else {
 		jsonData = query.RetrieveClusterMetrics(query.Logical)
 	}
@@ -271,11 +336,16 @@ func GetDeploymentMetrics(w http.ResponseWriter, r *http.Request) {
 
 	var jsonData query.JSONDataWrapper
 	if name, isName := queryParams[query.Name]; isName {
-		jsonData = query.RetrieveResourceMetrics(query.DeploymentCheck, query.DeploymentType, name[0])
+		resourceQuery := query.Resource{
+			Check: query.DeploymentCheck,
+			Type:  query.DeploymentType,
+			Name:  name[0],
+		}
+		jsonData = resourceQuery.RetrieveResourceMetrics()
+		query.PopulateClusterAllocationAndCapacity(&jsonData)
 	} else {
 		logrus.Errorf("wrong type of query for deployment, no name is given")
 	}
-	query.PopulateClusterAllocationAndCapacity(&jsonData)
 	encodeAndWrite(w, jsonData)
 }
 
@@ -287,7 +357,13 @@ func GetDaemonsetMetrics(w http.ResponseWriter, r *http.Request) {
 
 	var jsonData query.JSONDataWrapper
 	if name, isName := queryParams[query.Name]; isName {
-		jsonData = query.RetrieveResourceMetrics(query.DaemonsetCheck, query.DaemonsetType, name[0])
+		resourceQuery := query.Resource{
+			Check: query.DaemonsetCheck,
+			Type:  query.DaemonsetType,
+			Name:  name[0],
+		}
+		jsonData = resourceQuery.RetrieveResourceMetrics()
+		query.PopulateClusterAllocationAndCapacity(&jsonData)
 	} else {
 		logrus.Errorf("wrong type of query for daemonset, no name is given")
 	}
@@ -302,11 +378,16 @@ func GetJobMetrics(w http.ResponseWriter, r *http.Request) {
 
 	var jsonData query.JSONDataWrapper
 	if name, isName := queryParams[query.Name]; isName {
-		jsonData = query.RetrieveResourceMetrics(query.JobCheck, query.JobType, name[0])
+		resourceQuery := query.Resource{
+			Check: query.JobCheck,
+			Type:  query.JobType,
+			Name:  name[0],
+		}
+		jsonData = resourceQuery.RetrieveResourceMetrics()
+		query.PopulateClusterAllocationAndCapacity(&jsonData)
 	} else {
 		logrus.Errorf("wrong type of query for job, no name is given")
 	}
-	query.PopulateClusterAllocationAndCapacity(&jsonData)
 	encodeAndWrite(w, jsonData)
 }
 
@@ -318,11 +399,16 @@ func GetStatefulsetMetrics(w http.ResponseWriter, r *http.Request) {
 
 	var jsonData query.JSONDataWrapper
 	if name, isName := queryParams[query.Name]; isName {
-		jsonData = query.RetrieveResourceMetrics(query.StatefulsetCheck, query.StatefulsetType, name[0])
+		resourceQuery := query.Resource{
+			Check: query.StatefulsetCheck,
+			Type:  query.StatefulsetType,
+			Name:  name[0],
+		}
+		jsonData = resourceQuery.RetrieveResourceMetrics()
+		query.PopulateClusterAllocationAndCapacity(&jsonData)
 	} else {
 		logrus.Errorf("wrong type of query for statefulset, no name is given")
 	}
-	query.PopulateClusterAllocationAndCapacity(&jsonData)
 	encodeAndWrite(w, jsonData)
 }
 
@@ -334,11 +420,16 @@ func GetReplicasetMetrics(w http.ResponseWriter, r *http.Request) {
 
 	var jsonData query.JSONDataWrapper
 	if name, isName := queryParams[query.Name]; isName {
-		jsonData = query.RetrieveResourceMetrics(query.ReplicasetCheck, query.ReplicasetType, name[0])
+		resourceQuery := query.Resource{
+			Check: query.ReplicasetCheck,
+			Type:  query.ReplicasetType,
+			Name:  name[0],
+		}
+		jsonData = resourceQuery.RetrieveResourceMetrics()
+		query.PopulateClusterAllocationAndCapacity(&jsonData)
 	} else {
 		logrus.Errorf("wrong type of query for statefulset, no name is given")
 	}
-	query.PopulateClusterAllocationAndCapacity(&jsonData)
 	encodeAndWrite(w, jsonData)
 }
 
@@ -350,8 +441,13 @@ func GetNodeMetrics(w http.ResponseWriter, r *http.Request) {
 
 	var jsonData query.JSONDataWrapper
 	if name, isName := queryParams[query.Name]; isName {
-		jsonData = query.RetrieveResourceMetrics(query.NodeCheck, query.NodeType, name[0])
-		query.PopulateNodeOrPVAllocationAndCapacity(query.NodeType, name[0], &jsonData)
+		resourceQuery := query.Resource{
+			Check: query.NodeCheck,
+			Type:  query.NodeType,
+			Name:  name[0],
+		}
+		jsonData = resourceQuery.RetrieveResourceMetrics()
+		resourceQuery.PopulateNodeOrPVAllocationAndCapacity(&jsonData)
 	} else {
 		logrus.Errorf("wrong type of query for node, no name is given")
 	}
@@ -366,11 +462,16 @@ func GetPodMetrics(w http.ResponseWriter, r *http.Request) {
 
 	var jsonData query.JSONDataWrapper
 	if name, isName := queryParams[query.Name]; isName {
-		jsonData = query.RetrieveResourceMetrics(query.PodCheck, query.PodType, name[0])
+		resourceQuery := query.Resource{
+			Check: query.PodCheck,
+			Type:  query.PodType,
+			Name:  name[0],
+		}
+		jsonData = resourceQuery.RetrieveResourceMetrics()
+		query.PopulateClusterAllocationAndCapacity(&jsonData)
 	} else {
 		logrus.Errorf("wrong type of query for pod, no name is given")
 	}
-	query.PopulateClusterAllocationAndCapacity(&jsonData)
 	encodeAndWrite(w, jsonData)
 }
 
@@ -382,11 +483,16 @@ func GetContainerMetrics(w http.ResponseWriter, r *http.Request) {
 
 	var jsonData query.JSONDataWrapper
 	if name, isName := queryParams[query.Name]; isName {
-		jsonData = query.RetrieveResourceMetrics(query.ContainerCheck, query.ContainerType, name[0])
+		resourceQuery := query.Resource{
+			Check: query.ContainerCheck,
+			Type:  query.ContainerType,
+			Name:  name[0],
+		}
+		jsonData = resourceQuery.RetrieveResourceMetrics()
+		query.PopulateClusterAllocationAndCapacity(&jsonData)
 	} else {
 		logrus.Errorf("wrong type of query for container, no name is given")
 	}
-	query.PopulateClusterAllocationAndCapacity(&jsonData)
 	encodeAndWrite(w, jsonData)
 }
 
@@ -398,15 +504,20 @@ func GetPVMetrics(w http.ResponseWriter, r *http.Request) {
 
 	var jsonData query.JSONDataWrapper
 	if name, isName := queryParams[query.Name]; isName {
-		jsonData = query.RetrieveResourceMetrics(query.PVCheck, query.PVType, name[0])
-		query.PopulateNodeOrPVAllocationAndCapacity(query.PVType, name[0], &jsonData)
+		resourceQuery := query.Resource{
+			Check: query.PVCheck,
+			Type:  query.PVType,
+			Name:  name[0],
+		}
+		jsonData = resourceQuery.RetrieveResourceMetrics()
+		resourceQuery.PopulateNodeOrPVAllocationAndCapacity(&jsonData)
 	} else {
 		logrus.Errorf("wrong type of query for PV, no name is given")
 	}
 	encodeAndWrite(w, jsonData)
 }
 
-// GetPVCMetrics listens on /metrics/pv
+// GetPVCMetrics listens on /metrics/pvc
 func GetPVCMetrics(w http.ResponseWriter, r *http.Request) {
 	addHeaders(&w, r)
 	queryParams := r.URL.Query()
@@ -414,11 +525,16 @@ func GetPVCMetrics(w http.ResponseWriter, r *http.Request) {
 
 	var jsonData query.JSONDataWrapper
 	if name, isName := queryParams[query.Name]; isName {
-		jsonData = query.RetrieveResourceMetrics(query.PVCCheck, query.PVCType, name[0])
+		resourceQuery := query.Resource{
+			Check: query.PVCCheck,
+			Type:  query.PVCType,
+			Name:  name[0],
+		}
+		jsonData = resourceQuery.RetrieveResourceMetrics()
+		query.PopulateClusterAllocationAndCapacity(&jsonData)
 	} else {
 		logrus.Errorf("wrong type of query for PVC, no name is given")
 	}
-	query.PopulateClusterAllocationAndCapacity(&jsonData)
 	encodeAndWrite(w, jsonData)
 }
 

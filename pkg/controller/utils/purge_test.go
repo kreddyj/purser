@@ -15,21 +15,16 @@
  * limitations under the License.
  */
 
-package query
+package utils
 
 import (
-	"strconv"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/vmware/purser/test/utils"
 )
 
-// TestGetSecondsSinceMonthStart ...
-func TestGetSecondsSinceMonthStart(t *testing.T) {
-	maxSecondsInAMonth := 2678400.0
-	got := getSecondsSinceMonthStart()
-	gotFloat, err := strconv.ParseFloat(got, 64)
-	assert.NoError(t, err, "unable to convert secondsSinceMonthStart to float64")
-	assert.False(t, gotFloat > maxSecondsInAMonth, "secondsSinceMonthStart can't be greater than 2678400")
-	assert.False(t, gotFloat < 0, "secondsSinceMonthStart can't be less than 0")
+func TestHexToDecIP(t *testing.T) {
+	act := hexToDecIP("030310AC")
+	exp := "172.16.3.3"
+	utils.Equals(t, exp, act)
 }

@@ -26,54 +26,16 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var firstPod, secondPod, firstPodWithMetrics, secondPodWithMetrics Children
-
-func setupForResources() {
-	firstPod = Children{
-		Name: "pod-purser-1",
-		Type: PodType,
-	}
-	secondPod = Children{
-		Name: "pod-purser-2",
-		Type: PodType,
-	}
-	firstPodWithMetrics = Children{
-		Name:        "pod-purser-1",
-		Type:        PodType,
-		CPU:         0.25,
-		Memory:      0.1,
-		Storage:     1.2,
-		CPUCost:     0.024,
-		MemoryCost:  0.09,
-		StorageCost: 0.1,
-	}
-	secondPodWithMetrics = Children{
-		Name:        "pod-purser-2",
-		Type:        PodType,
-		CPU:         0.15,
-		Memory:      0.2,
-		Storage:     0.2,
-		CPUCost:     0.014,
-		MemoryCost:  0.19,
-		StorageCost: 0.01,
-	}
-}
-
-func mockDgraphForResourceQueries(isHierarchy, dgraphError bool) {
-	setupForResources()
+func mockDgraphForResourceQueries(queryType, resourceName, resourceType string) {
 	executeQuery = func(query string, root interface{}) error {
-		if dgraphError {
-			return fmt.Errorf("error while executing query")
-		}
-
-		if query == podPriceTestQuery {
+		if queryType == testPodPrices {
 			newRoot, ok := root.(*podRoot)
 			if !ok {
 				return fmt.Errorf("wrong pod root received")
 			}
 			pod := models.Pod{
-				CPUPrice:    0.24,
-				MemoryPrice: 0.1,
+				CPUPrice:    testCPUPrice,
+				MemoryPrice: testMemoryPrice,
 			}
 			newRoot.Pods = []models.Pod{pod}
 			return nil
@@ -85,10 +47,30 @@ func mockDgraphForResourceQueries(isHierarchy, dgraphError bool) {
 		}
 
 		var parent Parent
-		if !isHierarchy {
+		if queryType == testMetrics {
+			firstPodWithMetrics := Children{
+				Name:        "pod-purser-1",
+				Type:        PodType,
+				CPU:         0.25,
+				Memory:      0.1,
+				Storage:     1.2,
+				CPUCost:     0.024,
+				MemoryCost:  0.09,
+				StorageCost: 0.1,
+			}
+			secondPodWithMetrics := Children{
+				Name:        "pod-purser-2",
+				Type:        PodType,
+				CPU:         0.15,
+				Memory:      0.2,
+				Storage:     0.2,
+				CPUCost:     0.014,
+				MemoryCost:  0.19,
+				StorageCost: 0.01,
+			}
 			parent = Parent{
-				Name:        testDaemonsetName,
-				Type:        DaemonsetType,
+				Name:        resourceName,
+				Type:        resourceType,
 				Children:    []Children{firstPodWithMetrics, secondPodWithMetrics},
 				CPU:         0.40,
 				Memory:      0.28,
@@ -97,30 +79,62 @@ func mockDgraphForResourceQueries(isHierarchy, dgraphError bool) {
 				MemoryCost:  0.28,
 				StorageCost: 0.11,
 			}
-		} else {
+			dummyParentWrapper.Parent = []Parent{parent}
+			return nil
+		} else if queryType == testHierarchy {
+			firstPod := Children{
+				Name: "pod-purser-1",
+				Type: PodType,
+			}
+			secondPod := Children{
+				Name: "pod-purser-2",
+				Type: PodType,
+			}
 			parent = Parent{
-				Name:     testDaemonsetName,
-				Type:     DaemonsetType,
+				Name:     resourceName,
+				Type:     resourceType,
 				Children: []Children{firstPod, secondPod},
 			}
+			dummyParentWrapper.Parent = []Parent{parent}
+			return nil
 		}
-		dummyParentWrapper.Parent = []Parent{parent}
-		return nil
+		return fmt.Errorf("unable to retrieve data from dgraph")
 	}
 }
 
 // TestRetrieveResourceHierarchyWithNameEmpty ...
 func TestRetrieveResourceHierarchyWithNameEmpty(t *testing.T) {
-	got := RetrieveResourceHierarchy(DaemonsetCheck, DaemonsetType, "", IsPodFilter)
+	input := &Resource{
+		Check:       DaemonsetCheck,
+		Type:        DaemonsetType,
+		Name:        "",
+		ChildFilter: IsPodFilter,
+	}
+	got := input.RetrieveResourceHierarchy()
 	expected := JSONDataWrapper{}
 	assert.Equal(t, expected, got)
 }
 
 // TestRetrieveResourceHierarchy ...
 func TestRetrieveResourceHierarchy(t *testing.T) {
-	mockDgraphForResourceQueries(testHierarchy, testNoDgraphError)
+	mockDgraphForResourceQueries(testHierarchy, testDaemonsetName, DaemonsetType)
 
-	got := RetrieveResourceHierarchy(DaemonsetCheck, DaemonsetType, testDaemonsetName, IsPodFilter)
+	input := &Resource{
+		Check:       DaemonsetCheck,
+		Type:        DaemonsetType,
+		Name:        testDaemonsetName,
+		ChildFilter: IsPodFilter,
+	}
+	got := input.RetrieveResourceHierarchy()
+
+	firstPod := Children{
+		Name: "pod-purser-1",
+		Type: PodType,
+	}
+	secondPod := Children{
+		Name: "pod-purser-2",
+		Type: PodType,
+	}
 	expected := JSONDataWrapper{
 		Data: ParentWrapper{
 			Name:     testDaemonsetName,
@@ -133,29 +147,176 @@ func TestRetrieveResourceHierarchy(t *testing.T) {
 
 // TestRetrieveResourceHierarchyWithDgraphError ...
 func TestRetrieveResourceHierarchyWithDgraphError(t *testing.T) {
-	mockDgraphForResourceQueries(testHierarchy, testDgraphError)
+	mockDgraphForResourceQueries(testWrongQuery, testDaemonsetName, DaemonsetType)
 
-	got := RetrieveResourceHierarchy(DaemonsetCheck, DaemonsetType, testDaemonsetName, IsPodFilter)
+	input := &Resource{
+		Check:       DaemonsetCheck,
+		Type:        DaemonsetType,
+		Name:        testDaemonsetName,
+		ChildFilter: IsPodFilter,
+	}
+	got := input.RetrieveResourceHierarchy()
 	expected := JSONDataWrapper{}
 	assert.Equal(t, expected, got)
 }
 
 // TestRetrieveResourceMetricsWithNameEmpty ...
 func TestRetrieveResourceMetricsWithNameEmpty(t *testing.T) {
-	got := RetrieveResourceMetrics(DaemonsetCheck, DaemonsetType, "")
+	input := &Resource{
+		Check: DaemonsetCheck,
+		Type:  DaemonsetType,
+		Name:  "",
+	}
+	got := input.RetrieveResourceMetrics()
 	expected := JSONDataWrapper{}
 	assert.Equal(t, expected, got)
 }
 
 // TestRetrieveDaemonsetMetrics ...
 func TestRetrieveDaemonsetMetrics(t *testing.T) {
-	mockDgraphForResourceQueries(testMetrics, testNoDgraphError)
+	mockDgraphForResourceQueries(testMetrics, testDaemonsetName, DaemonsetType)
 
-	got := RetrieveResourceMetrics(DaemonsetCheck, DaemonsetType, testDaemonsetName)
+	input := &Resource{
+		Check: DaemonsetCheck,
+		Type:  DaemonsetType,
+		Name:  testDaemonsetName,
+	}
+	got := input.RetrieveResourceMetrics()
+
+	expected := getExpectedTestMetrics(testDaemonsetName, DaemonsetType)
+	assert.Equal(t, expected, got)
+}
+
+// TestRetrieveDeploymentMetrics ...
+func TestRetrieveDeploymentMetrics(t *testing.T) {
+	mockDgraphForResourceQueries(testMetrics, testResourceName, DeploymentType)
+
+	input := &Resource{
+		Check: DeploymentCheck,
+		Type:  DeploymentType,
+		Name:  testResourceName,
+	}
+	got := input.RetrieveResourceMetrics()
+
+	expected := getExpectedTestMetrics(testResourceName, DeploymentType)
+	assert.Equal(t, expected, got)
+}
+
+// TestRetrieveNamespacetMetrics ...
+func TestRetrieveNamespacetMetrics(t *testing.T) {
+	mockDgraphForResourceQueries(testMetrics, testResourceName, NamespaceType)
+
+	input := &Resource{
+		Check: NamespaceCheck,
+		Type:  NamespaceType,
+		Name:  testResourceName,
+	}
+	got := input.RetrieveResourceMetrics()
+
+	expected := getExpectedTestMetrics(testResourceName, NamespaceType)
+	assert.Equal(t, expected, got)
+}
+
+// TestRetrievePVMetrics ...
+func TestRetrievePVMetrics(t *testing.T) {
+	mockDgraphForResourceQueries(testMetrics, testResourceName, PVType)
+
+	input := &Resource{
+		Check: PVCheck,
+		Type:  PVType,
+		Name:  testResourceName,
+	}
+	got := input.RetrieveResourceMetrics()
+
+	expected := getExpectedTestMetrics(testResourceName, PVType)
+	assert.Equal(t, expected, got)
+}
+
+// TestRetrievePVCMetrics ...
+func TestRetrievePVCMetrics(t *testing.T) {
+	mockDgraphForResourceQueries(testMetrics, testResourceName, PVCType)
+
+	input := &Resource{
+		Check: PVCCheck,
+		Type:  PVCType,
+		Name:  testResourceName,
+	}
+	got := input.RetrieveResourceMetrics()
+
+	expected := getExpectedTestMetrics(testResourceName, PVCType)
+	assert.Equal(t, expected, got)
+}
+
+// TestRetrieveContainerMetrics ...
+func TestRetrieveContainerMetrics(t *testing.T) {
+	mockDgraphForResourceQueries(testMetrics, testResourceName, ContainerType)
+
+	input := &Resource{
+		Check: ContainerCheck,
+		Type:  ContainerType,
+		Name:  testResourceName,
+	}
+	got := input.RetrieveResourceMetrics()
+
+	expected := getExpectedTestMetrics(testResourceName, ContainerType)
+	assert.Equal(t, expected, got)
+}
+
+// TestRetrieveNodeMetrics ...
+func TestRetrieveNodeMetrics(t *testing.T) {
+	mockDgraphForResourceQueries(testMetrics, testResourceName, NodeType)
+
+	input := &Resource{
+		Check: NodeCheck,
+		Type:  NodeType,
+		Name:  testResourceName,
+	}
+	got := input.RetrieveResourceMetrics()
+
+	expected := getExpectedTestMetrics(testResourceName, NodeType)
+	assert.Equal(t, expected, got)
+}
+
+// TestRetrievePodMetrics ...
+func TestRetrievePodMetrics(t *testing.T) {
+	mockDgraphForResourceQueries(testMetrics, testPodName, PodType)
+
+	input := &Resource{
+		Check: PodCheck,
+		Type:  PodType,
+		Name:  testPodName,
+	}
+	got := input.RetrieveResourceMetrics()
+
+	expected := getExpectedTestMetrics(testPodName, PodType)
+	assert.Equal(t, expected, got)
+}
+
+func getExpectedTestMetrics(name, resourceType string) JSONDataWrapper {
+	firstPodWithMetrics := Children{
+		Name:        "pod-purser-1",
+		Type:        PodType,
+		CPU:         0.25,
+		Memory:      0.1,
+		Storage:     1.2,
+		CPUCost:     0.024,
+		MemoryCost:  0.09,
+		StorageCost: 0.1,
+	}
+	secondPodWithMetrics := Children{
+		Name:        "pod-purser-2",
+		Type:        PodType,
+		CPU:         0.15,
+		Memory:      0.2,
+		Storage:     0.2,
+		CPUCost:     0.014,
+		MemoryCost:  0.19,
+		StorageCost: 0.01,
+	}
 	expected := JSONDataWrapper{
 		Data: ParentWrapper{
-			Name:        testDaemonsetName,
-			Type:        DaemonsetType,
+			Name:        name,
+			Type:        resourceType,
 			Children:    []Children{firstPodWithMetrics, secondPodWithMetrics},
 			CPU:         0.40,
 			Memory:      0.28,
@@ -165,56 +326,5 @@ func TestRetrieveDaemonsetMetrics(t *testing.T) {
 			StorageCost: 0.11,
 		},
 	}
-	assert.Equal(t, expected, got)
-}
-
-// TestGetQueryForResourceMetricsDeployment ...
-func TestGetQueryForResourceMetricsDeployment(t *testing.T) {
-	got := getQueryForResourceMetrics(DeploymentCheck, DeploymentType, testDeploymentName)
-	expected := deploymentMetricTestQuery
-	assert.Equal(t, expected, got)
-}
-
-// TestGetQueryForResourceMetricsNamespace ...
-func TestGetQueryForResourceMetricsNamespace(t *testing.T) {
-	got := getQueryForResourceMetrics(NamespaceCheck, NamespaceType, testNamespaceName)
-	expected := namespaceMetricTestQuery
-	assert.Equal(t, expected, got)
-}
-
-// TestGetQueryForResourceMetricsNode ...
-func TestGetQueryForResourceMetricsNode(t *testing.T) {
-	got := getQueryForResourceMetrics(NodeCheck, NodeType, testNodeName)
-	expected := nodeMetricTestQuery
-	assert.Equal(t, expected, got)
-}
-
-// TestGetQueryForResourceMetricsPV ...
-func TestGetQueryForResourceMetricsPV(t *testing.T) {
-	got := getQueryForResourceMetrics(PVCheck, PVType, testPVName)
-	expected := pvMetricTestQuery
-	assert.Equal(t, expected, got)
-}
-
-// TestGetQueryForResourceMetricsPVC ...
-func TestGetQueryForResourceMetricsPVC(t *testing.T) {
-	got := getQueryForResourceMetrics(PVCCheck, PVCType, testPVCName)
-	expected := pvcMetricTestQuery
-	assert.Equal(t, expected, got)
-}
-
-// TestGetQueryForResourceMetricsPod ...
-func TestGetQueryForResourceMetricsPod(t *testing.T) {
-	mockDgraphForResourceQueries(testMetrics, testNoDgraphError)
-	got := getQueryForResourceMetrics(PodCheck, PodType, testPodName)
-	expected := podMetricTestQuery
-	assert.Equal(t, expected, got)
-}
-
-// TestGetQueryForResourceMetricsPod ...
-func TestGetQueryForResourceMetricsPodWithError(t *testing.T) {
-	mockDgraphForResourceQueries(testMetrics, testNoDgraphError)
-	got := getQueryForResourceMetrics(PodCheck, PodType, "pod-wrong")
-	expected := podMetricTestQuery
-	assert.NotEqual(t, got, expected)
+	return expected
 }
