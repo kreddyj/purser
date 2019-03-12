@@ -15,125 +15,16 @@ const STATUS_WAIT = 'WAIT',
 
 
 export class CapactiyGraphComponent implements OnInit {
-
-    gaugeWidth = 700;
-    gaugeHeight = 200;
-    public gaugeType = 'cluster';
-
-    public cpuGaugeData = [];
     public cpuAllocated = 100.0;
     public cpuCapacity = 100.0;
-    cpuRedFrom = 0.75*this.cpuCapacity;
-    cpuRedTo = this.cpuCapacity;
-    cpuYellowFrom = 0.50*this.cpuCapacity;
-    cpuYellowTo = 0.75*this.cpuCapacity;
-    public cpuGaugeOptions = {
-        width: this.gaugeWidth, height: this.gaugeHeight,
-        redFrom: this.cpuRedFrom, redTo: this.cpuRedTo,
-        yellowFrom: this.cpuYellowFrom, yellowTo: this.cpuYellowTo,
-        minorTicks: 5, max: this.cpuCapacity,
-    };
-
-    public memoryGaugeData = [];
+    public cpuRatio = 100;
     public memoryAllocated = 100.0;
     public memoryCapacity = 100.0;
-    memoryRedFrom = 0.75*this.memoryCapacity;
-    memoryRedTo = this.memoryCapacity;
-    memoryYellowFrom = 0.50*this.memoryCapacity;
-    memoryYellowTo = 0.75*this.memoryCapacity;
-    public memoryGaugeOptions = {
-        width: this.gaugeWidth, height: this.gaugeHeight,
-        redFrom: this.memoryRedFrom, redTo: this.memoryRedTo,
-        yellowFrom: this.memoryYellowFrom, yellowTo: this.memoryYellowTo,
-        minorTicks: 5, max: this.memoryCapacity,
-    };
-
-    public storageGaugeData = [];
+    public memoryRatio = 100;
     public storageAllocated = 100.0;
     public storageCapacity = 100.0;
-    storageRedFrom = 0.75*this.storageCapacity;
-    storageRedTo = this.storageCapacity;
-    storageYellowFrom = 0.50*this.storageCapacity;
-    storageYellowTo = 0.75*this.storageCapacity;
-    public storageGaugeOptions = {
-        width: this.gaugeWidth, height: this.gaugeHeight,
-        redFrom: this.storageRedFrom, redTo: this.storageRedTo,
-        yellowFrom: this.storageYellowFrom, yellowTo: this.storageYellowTo,
-        minorTicks: 5, max: this.storageCapacity,
-    };
-
-    private setGauges(data) {
-        this.setCPUGauge(data)
-        this.setMemoryGauge(data)
-        this.setStorageGauge(data)
-    }
-
-    private setCPUGauge(data) {
-        console.log(data)
-        if (data.type === 'node') {
-            this.gaugeType = 'Node'
-        } else {
-            if (data.type === 'pv') {
-                this.gaugeType = 'PersistentVolume'
-            } else {
-                this.gaugeType = 'Cluster'
-            }
-        }
-        this.cpuCapacity = data.cpuCapacity.toFixed(2)
-        this.cpuAllocated = data.cpuAllocated.toFixed(2)
-
-        this.cpuGaugeData = [];
-        let eachRow = ['CPU', this.cpuAllocated];
-        this.cpuGaugeData.push(eachRow);
-        this.cpuRedFrom = 0.75*this.cpuCapacity;
-        this.cpuRedTo = this.cpuCapacity;
-        this.cpuYellowFrom = 0.50*this.cpuCapacity;
-        this.cpuYellowTo = 0.75*this.cpuCapacity;
-        this.cpuGaugeOptions = {
-            width: this.gaugeWidth, height: this.gaugeHeight,
-            redFrom: this.cpuRedFrom, redTo: this.cpuRedTo,
-            yellowFrom: this.cpuYellowFrom, yellowTo: this.cpuYellowTo,
-            minorTicks: 5, max: this.cpuCapacity,
-        };
-    }
-
-    private setMemoryGauge(data) {
-        this.memoryCapacity = data.memoryCapacity
-        this.memoryAllocated = data.memoryAllocated
-
-        this.memoryGaugeData = [];
-        let eachRow = ['Memory', this.memoryAllocated];
-        this.memoryGaugeData.push(eachRow);
-        this.memoryRedFrom = 0.75*this.memoryCapacity;
-        this.memoryRedTo = this.memoryCapacity;
-        this.memoryYellowFrom = 0.50*this.memoryCapacity;
-        this.memoryYellowTo = 0.75*this.memoryCapacity;
-        this.memoryGaugeOptions = {
-            width: this.gaugeWidth, height: this.gaugeHeight,
-            redFrom: this.memoryRedFrom, redTo: this.memoryRedTo,
-            yellowFrom: this.memoryYellowFrom, yellowTo: this.memoryYellowTo,
-            minorTicks: 5, max: this.memoryCapacity,
-        };
-    }
-
-    private setStorageGauge(data) {
-        this.storageCapacity = data.storageCapacity
-        this.storageAllocated = data.storageAllocated
-
-        this.storageGaugeData = [];
-        let eachRow = ['Storage', this.storageAllocated];
-        this.storageGaugeData.push(eachRow);
-        this.storageRedFrom = 0.75*this.storageCapacity;
-        this.storageRedTo = this.storageCapacity;
-        this.storageYellowFrom = 0.50*this.storageCapacity;
-        this.storageYellowTo = 0.75*this.storageCapacity;
-        this.storageGaugeOptions = {
-            width: this.gaugeWidth, height: this.gaugeHeight,
-            redFrom: this.storageRedFrom, redTo: this.storageRedTo,
-            yellowFrom: this.storageYellowFrom, yellowTo: this.storageYellowTo,
-            minorTicks: 5, max: this.storageCapacity,
-        };
-    }
+    public storageRatio = 100;
+    public resourceType = 'Cluster';
 
     //PUBLIC
     public CAPA_STATUS = STATUS_WAIT;
@@ -181,11 +72,38 @@ export class CapactiyGraphComponent implements OnInit {
             }
             this.capaData = response && response.data || {};
             this.orgCapaData = JSON.parse(JSON.stringify(this.capaData));
-            //console.log(this.capaData);
+
+            this.computeAllocationRatios(this.capaData);
             this.constructData(this.capaData);
         }, (err) => {
             this.CAPA_STATUS = STATUS_NODATA;
         });
+    }
+
+    private computeAllocationRatios(capaData) {
+        let data = JSON.parse(JSON.stringify(capaData));
+
+        if (data.type == 'node') {
+            this.resourceType = 'Node';
+        } else {
+            if (data.type == ' pv') {
+                this.resourceType = 'PersistentVolume';
+            } else {
+                this.resourceType = 'Cluster';
+            }
+        }
+
+        this.cpuCapacity = data.cpuCapacity.toFixed(2);
+        this.cpuAllocated = data.cpuAllocated.toFixed(2);
+        this.cpuRatio = Math.round(this.cpuAllocated * 100 / this.cpuCapacity);
+
+        this.memoryCapacity = data.memoryCapacity.toFixed(2);
+        this.memoryAllocated = data.memoryAllocated.toFixed(2);
+        this.memoryRatio = Math.round(this.memoryAllocated * 100 / this.memoryCapacity);
+
+        this.storageCapacity = data.storageCapacity.toFixed(2);
+        this.storageAllocated = data.storageAllocated.toFixed(2);
+        this.storageRatio = Math.round(this.storageAllocated * 100 / this.storageCapacity);
     }
 
     private constructRoot(capaData) {
@@ -238,7 +156,6 @@ export class CapactiyGraphComponent implements OnInit {
                 }
             }
         }
-        this.setGauges(data);
 
         this.CAPA_STATUS = STATUS_READY;
         //console.log(this.graphData);

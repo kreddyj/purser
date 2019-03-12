@@ -103,42 +103,55 @@
 <div class="row" style="margin-top: 5%" *ngIf="CAPA_STATUS === 'READY'">
     <div class="headerBlock">
         <div class="card-title">
-            <span class="headerText">{{gaugeType + ' Resource Allocation vs Capacity'}}</span>
+            <span class="headerText">{{resourceType + ' Resource Allocation vs Capacity'}}</span>
         </div>
     </div>
 </div>
 
-<div class="row" style="margin-top: 2%" *ngIf="CAPA_STATUS === 'READY'">
-    <div class="col-xs-4">
-        <div class="headerBlock">
-            <div class="card-title">
-                <span class="headerText">{{'CPU: ' + cpuAllocated + ' vCPU / ' + cpuCapacity + ' vCPU'}}</span>
+<div class="clr-row" *ngIf="CAPA_STATUS === 'READY'">
+    <div class="clr-col-12 clr-col-sm-4">
+            <div class="card">
+                <div class="card-block">
+                    <h4 class="card-title">CPU</h4>
+                    <p class="card-text">Allocated: {{ cpuAllocated }} vCPU<br />  Capacity: {{ cpuCapacity }} vCPU</p>
+                    <div class="progress-block">
+                        <label>CPU</label>
+                        <div class="progress-static labeled">
+                            <div class="progress-meter" [attr.data-value]="cpuRatio" [attr.data-displayval]="cpuRatio + '%'"></div>
+                            <span>{{ cpuRatio }}%</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="googleChartDiv">
-                <google-chart class="googleChart" [type]="'Gauge'" [data]="cpuGaugeData" [options]="cpuGaugeOptions"
-                    (select)="onSelect($event)" style="cursor:pointer"></google-chart>
+        </div>
+
+    <div class="clr-col-12 clr-col-sm-4">
+        <div class="card">
+            <div class="card-block">
+                <h4 class="card-title">Memory</h4>
+                <p class="card-text">Allocated: {{ memoryAllocated }} GB<br />  Capacity: {{ memoryCapacity }} GB</p>
+                <div class="progress-block">
+                    <label>Memory</label>
+                    <div class="progress-static labeled">
+                        <div class="progress-meter" [attr.data-value]="memoryRatio" [attr.data-displayval]="memoryRatio + '%'"></div>
+                        <span>{{ memoryRatio }}%</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-xs-4">
-        <div class="headerBlock">
-            <div class="card-title">
-                <span class="headerText">{{'Memory: ' + memoryAllocated + ' GB / ' + memoryCapacity + ' GB'}}</span>
-            </div>
-            <div class="googleChartDiv">
-                <google-chart class="googleChart" [type]="'Gauge'" [data]="memoryGaugeData" [options]="memoryGaugeOptions"
-                    (select)="onSelect($event)" style="cursor:pointer"></google-chart>
-            </div>
-        </div>
-    </div>
-    <div class="col-xs-4">
-        <div class="headerBlock">
-            <div class="card-title">
-                <span class="headerText">{{'Storage: ' + storageAllocated + ' GB / ' + storageCapacity + ' GB'}}</span>
-            </div>
-            <div class="googleChartDiv">
-                <google-chart class="googleChart" [type]="'Gauge'" [data]="storageGaugeData" [options]="storageGaugeOptions"
-                    (select)="onSelect($event)" style="cursor:pointer"></google-chart>
+    <div class="clr-col-12 clr-col-sm-4">
+        <div class="card">
+            <div class="card-block">
+                <h4 class="card-title">Storage</h4>
+                <p class="card-text">Allocated: {{ storageAllocated }} GB<br />  Capacity: {{ storageCapacity }} GB</p>
+                <div class="progress-block">
+                    <label>Storage</label>
+                    <div class="progress-static labeled">
+                        <div class="progress-meter" [attr.data-value]="storageRatio" [attr.data-displayval]="storageRatio + '%'"></div>
+                        <span>{{ storageRatio }}%</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
