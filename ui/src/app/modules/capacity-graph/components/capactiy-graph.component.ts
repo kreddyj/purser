@@ -73,16 +73,13 @@ export class CapactiyGraphComponent implements OnInit {
             this.capaData = response && response.data || {};
             this.orgCapaData = JSON.parse(JSON.stringify(this.capaData));
 
-            this.computeAllocationRatios(this.capaData);
             this.constructData(this.capaData);
         }, (err) => {
             this.CAPA_STATUS = STATUS_NODATA;
         });
     }
 
-    private computeAllocationRatios(capaData) {
-        let data = JSON.parse(JSON.stringify(capaData));
-
+    private computeAllocationRatios(data) {
         if (data.type == 'node') {
             this.resourceType = 'Node';
         } else {
@@ -93,16 +90,40 @@ export class CapactiyGraphComponent implements OnInit {
             }
         }
 
-        this.cpuCapacity = data.cpuCapacity.toFixed(2);
-        this.cpuAllocated = data.cpuAllocated.toFixed(2);
+        if (!!data.cpuCapacity) {
+            this.cpuCapacity = data.cpuCapacity.toFixed(2);
+        } else {
+            this.cpuCapacity = 0;
+        }
+        if (!!data.cpuAllocated) {
+            this.cpuAllocated = data.cpuAllocated.toFixed(2);
+        } else {
+            this.cpuAllocated = 0;
+        }
         this.cpuRatio = Math.round(this.cpuAllocated * 100 / this.cpuCapacity);
 
-        this.memoryCapacity = data.memoryCapacity.toFixed(2);
-        this.memoryAllocated = data.memoryAllocated.toFixed(2);
+        if (!!data.memoryCapacity) {
+            this.memoryCapacity = data.memoryCapacity.toFixed(2);
+        } else {
+            this.memoryCapacity = 0;
+        }
+        if (!!data.memoryAllocated) {
+            this.memoryAllocated = data.memoryAllocated.toFixed(2);
+        } else {
+            this.memoryAllocated = 0;
+        }
         this.memoryRatio = Math.round(this.memoryAllocated * 100 / this.memoryCapacity);
 
-        this.storageCapacity = data.storageCapacity.toFixed(2);
-        this.storageAllocated = data.storageAllocated.toFixed(2);
+        if (!!data.storageCapacity) {
+            this.storageCapacity = data.storageCapacity.toFixed(2);
+        } else {
+            this.storageCapacity = 0;
+        }
+        if (!!data.storageAllocated) {
+            this.storageAllocated = data.storageAllocated.toFixed(2);
+        } else {
+            this.storageAllocated = 0;
+        }
         this.storageRatio = Math.round(this.storageAllocated * 100 / this.storageCapacity);
     }
 
@@ -156,6 +177,8 @@ export class CapactiyGraphComponent implements OnInit {
                 }
             }
         }
+
+        this.computeAllocationRatios(data);
 
         this.CAPA_STATUS = STATUS_READY;
         //console.log(this.graphData);
