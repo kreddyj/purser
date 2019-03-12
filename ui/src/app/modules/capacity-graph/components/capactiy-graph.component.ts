@@ -80,16 +80,6 @@ export class CapactiyGraphComponent implements OnInit {
     }
 
     private computeAllocationRatios(data) {
-        if (data.type == 'node') {
-            this.resourceType = 'Node';
-        } else {
-            if (data.type == ' pv') {
-                this.resourceType = 'PersistentVolume';
-            } else {
-                this.resourceType = 'Cluster';
-            }
-        }
-
         if (!!data.cpuCapacity) {
             this.cpuCapacity = data.cpuCapacity.toFixed(2);
         } else {
@@ -125,6 +115,25 @@ export class CapactiyGraphComponent implements OnInit {
             this.storageAllocated = 0;
         }
         this.storageRatio = Math.round(this.storageAllocated * 100 / this.storageCapacity);
+
+        if (data.type == 'node') {
+            this.resourceType = 'Node';
+            this.storageAllocated = 0;
+            this.storageCapacity = 0;
+            this.storageRatio = 0;
+        } else {
+            if (data.type == 'pv') {
+                this.resourceType = 'PersistentVolume';
+                this.cpuAllocated = 0;
+                this.cpuCapacity = 0;
+                this.cpuRatio = 0;
+                this.memoryAllocated = 0;
+                this.memoryCapacity = 0;
+                this.memoryRatio = 0;
+            } else {
+                this.resourceType = 'Cluster';
+            }
+        }
     }
 
     private constructRoot(capaData) {

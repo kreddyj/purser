@@ -92,6 +92,7 @@ func getQueryForPVMetrics(name string) string {
 			storage: storage as storageCapacity
 			` + getQueryForTimeComputation("") + `
 			storageCost: math(storage * durationInHours * ` + models.DefaultStorageCostPerGBPerHour + `)
+			storageAllocated: sum(val(pvcStorage))
         }
     }`
 }

@@ -133,8 +133,8 @@ func ComputeClusterAllocationAndCapacity() {
 
 // PopulateNodeOrPVAllocationAndCapacity returns allocated, capacity for cpu, memory and storage
 func PopulateNodeOrPVAllocationAndCapacity(resourceType, name string, jsonData *JSONDataWrapper) {
-	capacityData := getCapacityData(resourceType, name)
-	populateCapacityData(capacityData.Data, jsonData)
+	resourceData := getResourceData(resourceType, name)
+	populateCapacityData(resourceData.Data, jsonData)
 }
 
 func populateCapacityData(allocatedAndCapacity ParentWrapper, jsonData *JSONDataWrapper) {
@@ -146,7 +146,7 @@ func populateCapacityData(allocatedAndCapacity ParentWrapper, jsonData *JSONData
 	jsonData.Data.StorageCapacity = allocatedAndCapacity.StorageCapacity
 }
 
-func getCapacityData(resourceType, name string) JSONDataWrapper {
+func getResourceData(resourceType, name string) JSONDataWrapper {
 	switch resourceType {
 	case NodeType:
 		return RetrieveResourceMetrics(NodeCheck, NodeType, name)
