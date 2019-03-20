@@ -26,10 +26,10 @@ export class LogicalGroupComponent implements OnInit {
   public exprStartIndices = [1];
   public toBeDeletedGroup = "Custom Group";
 
-  constructor(private router: Router, private capacityGraphService: LogicalGroupService) { }
+  constructor(private router: Router, private logicalGroupService: LogicalGroupService) { }
 
   private getLogicalGroupData() {
-      let observableEntity: Observable<any> = this.capacityGraphService.getLogicalGroupData();
+      let observableEntity: Observable<any> = this.logicalGroupService.getLogicalGroupData();
       this.GROUP_STATUS = STATUS_WAIT;
       observableEntity.subscribe((response) => {
           if (!response) {
@@ -58,6 +58,13 @@ export class LogicalGroupComponent implements OnInit {
   }
 
   public deleteGroup() {
+    console.log("deleting group ", this.toBeDeletedGroup)
+    let observableEntity: Observable<any> = this.logicalGroupService.deleteCustomGroup(this.toBeDeletedGroup);
+      observableEntity.subscribe((response) => {
+          console.log("successfully deleted group");
+      }, (err) => {
+          console.log("failed to delete group", err);
+      });
     this.isDeleteGroup = false;
   }
 

@@ -232,4 +232,10 @@ var routes = Routes{
 		"/auth/changePassword",
 		apiHandlers.ChangePassword,
 	},
+	Route{
+		"DeleteGroup",
+		"POST",
+		"/api/group/delete",
+		apiHandlers.DeleteGroup,
+	},
 }

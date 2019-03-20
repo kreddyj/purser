@@ -25,4 +25,9 @@ export class LogicalGroupService {
             withCredentials: true,
         });
     }
+
+    public deleteCustomGroup(name) {
+        let _url: string = BACKEND_URL + 'group/delete?name=' + name;
+        return this.http.post(_url, null, {withCredentials: true})
+    }
 }

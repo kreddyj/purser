@@ -63,7 +63,7 @@ func init() {
 }
 
 func main() {
-	go api.StartServer(*cookieStoreKey, *cookieName)
+	go api.StartServer(*cookieStoreKey, *cookieName, conf)
 	go eventprocessor.ProcessEvents(&conf)
 
 	if *interactions == "enable" {
