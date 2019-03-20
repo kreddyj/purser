@@ -18,12 +18,15 @@
 package apiHandlers
 
 import (
-	"net/http"
-	"github.com/vmware/purser/pkg/controller/dgraph/models/query"
+	"encoding/json"
+	"fmt"
 	"github.com/Sirupsen/logrus"
-	"github.com/vmware/purser/pkg/controller"
+	group_v1 "github.com/vmware/purser/pkg/apis/groups/v1"
 	"github.com/vmware/purser/pkg/client/clientset/typed/groups/v1"
+	"github.com/vmware/purser/pkg/controller"
+	"github.com/vmware/purser/pkg/controller/dgraph/models/query"
 	meta_v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"net/http"
 )
 
 var groupClient *v1.GroupClient
@@ -58,6 +61,29 @@ func DeleteGroup(w http.ResponseWriter, r *http.Request) {
 		}
 		logrus.Errorf("unable to delete: query params: %v, err: %v", queryParams, err)
 		w.WriteHeader(http.StatusBadRequest)
+	}
+}
+
+// CreateGroup listens on /api/group/create
+func CreateGroup(w http.ResponseWriter, r *http.Request) {
+	if isUserAuthenticated(w, r) {
+		addAccessControlHeaders(&w, r)
+		newGroup := group_v1.Group{}
+		fmt.Printf("body: %v\n", r.Body)
+		//json.Unmarshal([]byte(r.Body), &newGroup)
+		err := json.NewDecoder(r.Body).Decode(&newGroup)
+		if err != nil {
+			logrus.Errorf("unable to parse object as group, err: %v", err)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		_, err = getGroupClient().Create(&newGroup)
+		if err != nil {
+			logrus.Errorf("unable to create group: %v", err)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
 	}
 }
 

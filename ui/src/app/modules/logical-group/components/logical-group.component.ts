@@ -25,6 +25,11 @@ export class LogicalGroupComponent implements OnInit {
   public exprCount = [0];
   public exprStartIndices = [1];
   public toBeDeletedGroup = "Custom Group";
+  public newGroup = {
+    groupName: "",
+  }
+
+  public group: any;
 
   constructor(private router: Router, private logicalGroupService: LogicalGroupService) { }
 
@@ -44,6 +49,7 @@ export class LogicalGroupComponent implements OnInit {
 
   public fillGroupData() {
     this.isCreateGroup = true;
+    this.group = null;
     this.num = 1;
     this.exprCount = [0];
   }
@@ -54,6 +60,12 @@ export class LogicalGroupComponent implements OnInit {
   }
 
   public createGroup() {
+    let observableEntity: Observable<any> = this.logicalGroupService.createCustomGroup(this.group);
+      observableEntity.subscribe((response) => {
+          console.log("successfully created group");
+      }, (err) => {
+          console.log("failed to create group", err);
+      });
     this.isCreateGroup = false;
   }
 
@@ -103,6 +115,7 @@ export class LogicalGroupComponent implements OnInit {
     this.old = 0;
     this.isDeleteGroup = false;
     this.toBeDeletedGroup = "Custom Group";
+    this.group = null;
   }
 
 }

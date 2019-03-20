@@ -30,4 +30,9 @@ export class LogicalGroupService {
         let _url: string = BACKEND_URL + 'group/delete?name=' + name;
         return this.http.post(_url, null, {withCredentials: true})
     }
+
+    public createCustomGroup(groupDef) {
+        let _url: string = BACKEND_URL + 'group/create';
+        return this.http.post(_url, groupDef, {withCredentials: true})
+    }
 }
