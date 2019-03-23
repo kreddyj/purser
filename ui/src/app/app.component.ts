@@ -4,7 +4,7 @@ import { Router, RouterEvent, NavigationStart, NavigationEnd, NavigationCancel, 
 import { MCommon } from './common/messages/common.messages';
 
 // production environment
-const BACKEND_BASE_URL = window.location.protocol + '//' + window.location.host
+const BACKEND_BASE_URL = 'http://purser.symphony-dev.com'
 
 // development environment
 // const BACKEND_BASE_URL = 'http://localhost:3030'

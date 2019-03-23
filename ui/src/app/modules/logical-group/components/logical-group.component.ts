@@ -28,7 +28,7 @@ export class LogicalGroupComponent implements OnInit {
   public group: any;
 
   constructor(private router: Router, private logicalGroupService: LogicalGroupService) {
-   }
+  }
 
 
   private getLogicalGroupData() {
@@ -86,7 +86,8 @@ export class LogicalGroupComponent implements OnInit {
   }
 
   public setToBeDeletedGroup(grpName) {
-    this.toBeDeletedGroup = grpName
+    this.toBeDeletedGroup = grpName;
+    this.isDeleteGroup = true;
   }
 
   public reset() {
