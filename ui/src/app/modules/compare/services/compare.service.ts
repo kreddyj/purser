@@ -12,8 +12,8 @@ export class CompareService{
     regions : CloudRegion[] = [];
     cloudDetails : CloudDetails[] = [];
 
-    getRegionsUrl = "/clouds/regions";
-    postCloudRegion =  "/api/clouds/compare";
+    getRegionsUrl = BACKEND_URL + 'clouds/regions';
+    postCloudRegion =  BACKEND_URL + 'clouds/compare';
 
     constructor(private http: HttpClient){ }
 
